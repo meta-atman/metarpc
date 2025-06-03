@@ -28,20 +28,11 @@ go.work.sum
 .env
 
 # Editor/IDE
-**/.idea
-**/.vscode
-**/.DS_Store
-**/logs
+.idea
+.vscode
+
+.DS_Store
 
 # gitlab ci
 .cache
 .golangci.yml
-
-# Unignore all with extensions
-!*.*
-!**/Dockerfile
-!**/Makefile
-
-# vim auto backup file
-*~
-!OWNERS
