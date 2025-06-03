@@ -35,10 +35,25 @@ type fieldInfo struct {
 	mapField *fieldInfo
 }
 
-// FillDefault fills the default values for the given v,
-// and the premise is that the value of v must be guaranteed to be empty.
 func FillDefault(v any) error {
 	return fillDefaultUnmarshaler.Unmarshal(map[string]any{}, v)
+}
+
+// New creates a new instance of the Configurator.
+func New[T any](path string, opts ...Option) (*T, error) {
+	v := new(T)
+	if err := Load(path, v, opts...); err != nil {
+		return nil, err
+	}
+
+	return v, nil
+}
+
+// MustLoad loads config into v from path, exits on error.
+func MustLoad(path string, v any, opts ...Option) {
+	if err := Load(path, v, opts...); err != nil {
+		log.Fatalf("error: config file %s, %s", path, err.Error())
+	}
 }
 
 // Load loads config into v from file, .json, .yaml and .yml are acceptable.
@@ -69,13 +84,6 @@ func Load(file string, v any, opts ...Option) error {
 	return validate(v)
 }
 
-// LoadConfig loads config into v from file, .json, .yaml and .yml are acceptable.
-// Deprecated: use Load instead.
-func LoadConfig(file string, v any, opts ...Option) error {
-	return Load(file, v, opts...)
-}
-
-// LoadFromJsonBytes loads config into v from content json bytes.
 func LoadFromJsonBytes(content []byte, v any) error {
 	info, err := buildFieldsInfo(reflect.TypeOf(v), "")
 	if err != nil {
@@ -97,13 +105,6 @@ func LoadFromJsonBytes(content []byte, v any) error {
 	return validate(v)
 }
 
-// LoadConfigFromJsonBytes loads config into v from content json bytes.
-// Deprecated: use LoadFromJsonBytes instead.
-func LoadConfigFromJsonBytes(content []byte, v any) error {
-	return LoadFromJsonBytes(content, v)
-}
-
-// LoadFromTomlBytes loads config into v from content toml bytes.
 func LoadFromTomlBytes(content []byte, v any) error {
 	b, err := encoding.TomlToJson(content)
 	if err != nil {
@@ -113,7 +114,6 @@ func LoadFromTomlBytes(content []byte, v any) error {
 	return LoadFromJsonBytes(b, v)
 }
 
-// LoadFromYamlBytes loads config into v from content yaml bytes.
 func LoadFromYamlBytes(content []byte, v any) error {
 	b, err := encoding.YamlToJson(content)
 	if err != nil {
@@ -121,19 +121,6 @@ func LoadFromYamlBytes(content []byte, v any) error {
 	}
 
 	return LoadFromJsonBytes(b, v)
-}
-
-// LoadConfigFromYamlBytes loads config into v from content yaml bytes.
-// Deprecated: use LoadFromYamlBytes instead.
-func LoadConfigFromYamlBytes(content []byte, v any) error {
-	return LoadFromYamlBytes(content, v)
-}
-
-// MustLoad loads config into v from path, exits on error.
-func MustLoad(path string, v any, opts ...Option) {
-	if err := Load(path, v, opts...); err != nil {
-		log.Fatalf("error: config file %s, %s", path, err.Error())
-	}
 }
 
 func addOrMergeFields(info *fieldInfo, key string, child *fieldInfo, fullName string) error {
@@ -210,8 +197,10 @@ func buildFieldsInfo(tp reflect.Type, fullName string) (*fieldInfo, error) {
 }
 
 func buildNamedFieldInfo(info *fieldInfo, lowerCaseName string, ft reflect.Type, fullName string) error {
-	var finfo *fieldInfo
-	var err error
+	var (
+		err   error
+		finfo *fieldInfo
+	)
 
 	switch ft.Kind() {
 	case reflect.Struct:
