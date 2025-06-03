@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/meta-atman/metarpc/core/encoding/jsonx"
+	jsonx "github.com/meta-atman/metarpc/core/encoding/json"
 	"reflect"
 	"slices"
 	"strconv"

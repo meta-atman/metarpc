@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/meta-atman/metarpc/core/encoding"
-	"github.com/meta-atman/metarpc/core/encoding/jsonx"
+	"github.com/meta-atman/metarpc/core/encoding/json"
 	"log"
 	"os"
 	"path"
@@ -83,7 +83,7 @@ func LoadFromJsonBytes(content []byte, v any) error {
 	}
 
 	var m map[string]any
-	if err = jsonx.Unmarshal(content, &m); err != nil {
+	if err = json.Unmarshal(content, &m); err != nil {
 		return err
 	}
 

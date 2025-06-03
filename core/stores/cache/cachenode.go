@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/meta-atman/metarpc/core/encoding/jsonx"
+	"github.com/meta-atman/metarpc/core/encoding/json"
 	"math"
 	"math/rand"
 	"sync"
@@ -126,7 +126,7 @@ func (c cacheNode) SetWithExpire(key string, val any, expire time.Duration) erro
 // SetWithExpireCtx sets the cache with key and v, using given expire.
 func (c cacheNode) SetWithExpireCtx(ctx context.Context, key string, val any,
 	expire time.Duration) error {
-	data, err := jsonx.Marshal(val)
+	data, err := json.Marshal(val)
 	if err != nil {
 		return err
 	}
@@ -235,7 +235,7 @@ func (c cacheNode) doTake(ctx context.Context, v any, key string,
 			}
 		}
 
-		return jsonx.Marshal(v)
+		return json.Marshal(v)
 	})
 	if err != nil {
 		return err
@@ -252,11 +252,11 @@ func (c cacheNode) doTake(ctx context.Context, v any, key string,
 	c.stat.IncrementTotal()
 	c.stat.IncrementHit()
 
-	return jsonx.Unmarshal(val.([]byte), v)
+	return json.Unmarshal(val.([]byte), v)
 }
 
 func (c cacheNode) processCache(ctx context.Context, key, data string, v any) error {
-	err := jsonx.Unmarshal([]byte(data), v)
+	err := json.Unmarshal([]byte(data), v)
 	if err == nil {
 		return nil
 	}

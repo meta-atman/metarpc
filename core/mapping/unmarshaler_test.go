@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/meta-atman/metarpc/core/encoding/jsonx"
+	"github.com/meta-atman/metarpc/core/encoding/json"
 	"reflect"
 	"strconv"
 	"strings"
@@ -4897,7 +4897,7 @@ func TestUnmarshalJsonReaderMultiArray(t *testing.T) {
 			},
 			C: []byte("11122344wsss"),
 		}
-		bytes, err := jsonx.Marshal(marshal)
+		bytes, err := json.Marshal(marshal)
 		assert.NoError(t, err)
 		payload := string(bytes)
 		reader := strings.NewReader(payload)

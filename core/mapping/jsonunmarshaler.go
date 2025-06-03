@@ -1,7 +1,7 @@
 package mapping
 
 import (
-	"github.com/meta-atman/metarpc/core/encoding/jsonx"
+	"github.com/meta-atman/metarpc/core/encoding/json"
 	"io"
 )
 
@@ -34,7 +34,7 @@ func getJsonUnmarshaler(opts ...UnmarshalOption) *Unmarshaler {
 
 func unmarshalJsonBytes(content []byte, v any, unmarshaler *Unmarshaler) error {
 	var m any
-	if err := jsonx.Unmarshal(content, &m); err != nil {
+	if err := json.Unmarshal(content, &m); err != nil {
 		return err
 	}
 
@@ -43,7 +43,7 @@ func unmarshalJsonBytes(content []byte, v any, unmarshaler *Unmarshaler) error {
 
 func unmarshalJsonReader(reader io.Reader, v any, unmarshaler *Unmarshaler) error {
 	var m any
-	if err := jsonx.UnmarshalFromReader(reader, &m); err != nil {
+	if err := json.UnmarshalFromReader(reader, &m); err != nil {
 		return err
 	}
 
