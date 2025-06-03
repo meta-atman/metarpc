@@ -12,7 +12,6 @@ import (
 	"sync/atomic"
 
 	fatihcolor "github.com/fatih/color"
-	"github.com/meta-atman/metarpc/core/color"
 	"github.com/meta-atman/metarpc/core/errorx"
 )
 
@@ -393,29 +392,29 @@ func output(writer io.Writer, level string, val any, fields ...LogField) {
 }
 
 func wrapLevelWithColor(level string) string {
-	var colour color.Color
+	var colour Color
 	switch level {
 	case levelAlert:
-		colour = color.FgRed
+		colour = FgRed
 	case levelError:
-		colour = color.FgRed
+		colour = FgRed
 	case levelFatal:
-		colour = color.FgRed
+		colour = FgRed
 	case levelInfo:
-		colour = color.FgBlue
+		colour = FgBlue
 	case levelSlow:
-		colour = color.FgYellow
+		colour = FgYellow
 	case levelDebug:
-		colour = color.FgYellow
+		colour = FgYellow
 	case levelStat:
-		colour = color.FgGreen
+		colour = FgGreen
 	}
 
-	if colour == color.NoColor {
+	if colour == NoColor {
 		return level
 	}
 
-	return color.WithColorPadding(level, colour)
+	return WithColorPadding(level, colour)
 }
 
 func writeJson(writer io.Writer, info any) {

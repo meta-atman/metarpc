@@ -72,16 +72,16 @@ func (c cacheNode) DelCtx(ctx context.Context, keys ...string) error {
 		return nil
 	}
 
-	logger := logger.WithContext(ctx)
+	log := logger.WithContext(ctx)
 	if len(keys) > 1 && c.rds.Type == redis.ClusterType {
 		for _, key := range keys {
 			if _, err := c.rds.DelCtx(ctx, key); err != nil {
-				logger.Errorf("failed to clear cache with key: %q, error: %v", key, err)
+				log.Errorf("failed to clear cache with key: %q, error: %v", key, err)
 				c.asyncRetryDelCache(key)
 			}
 		}
 	} else if _, err := c.rds.DelCtx(ctx, keys...); err != nil {
-		logger.Errorf("failed to clear cache with keys: %q, error: %v", formatKeys(keys), err)
+		log.Errorf("failed to clear cache with keys: %q, error: %v", formatKeys(keys), err)
 		c.asyncRetryDelCache(keys...)
 	}
 
